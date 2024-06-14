@@ -8,5 +8,4 @@ public interface FileUrls {
     String PRODUCTS_UZ_URL = "src/main/resources/db/products_uz.json";
     String ORDER_URL = "src/main/resources/db/orders.json";
     String ORDER_PRODUCT_URL = "src/main/resources/db/order_product.json";
-    //String LOGO_PHOTO = "src/main/resources/statics/";
 }
