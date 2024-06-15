@@ -16,6 +16,7 @@ public enum MessageKey {
     ADD_TO_BASKET("add.basket", "Savatga qoshish"),
     IN_BASKET("in.basket", "Savatda:"),
     ALL_PRODUCTS("all.products", "Mahsulotlar :"),
+    NAME_ERROR("name.error","Ismingizda xato"),
     ALL("all", "Jami : "),
     SUCCESSFUL("success", "Tayyor"),
     MAIN_MENU("main.menu", "Quyidagilarrdan birini tanlang"),

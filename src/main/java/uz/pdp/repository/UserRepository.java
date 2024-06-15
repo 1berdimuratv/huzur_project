@@ -41,6 +41,17 @@ public class UserRepository implements BaseRepository<User, Long> {
         setAllUsersFromFile(users);
         return true;
     }
+    public Boolean delete(Long id){
+        List<User> users = getAllUsersFromFile();
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getChatId().equals(id)){
+                users.remove(i);
+                break;
+            }
+        }
+        setAllUsersFromFile(users);
+        return true;
+    }
 
     @Override
     public List<User> findAll() {

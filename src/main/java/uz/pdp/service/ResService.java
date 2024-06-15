@@ -6,9 +6,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.pdp.model.OrderProduct;
 import uz.pdp.model.User;
@@ -23,20 +25,35 @@ public class ResService {
     private static final Long me = -4266295619L;
     public static void sendMsg(Long chatId, String text, ReplyKeyboard replyKeyboard) {
         try {
+                GlobalVar.getMyBot().execute(
+                        SendMessage.builder()
+                                .text(text)
+                                .chatId(chatId)
+                                .replyMarkup(replyKeyboard)
+                                .build()
+                );
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+    public static void sendSimpleMsg(Long chatId, String text) {
+        try {
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            message.setText(text);
+            /*KeyboardRow keyboardRow = new KeyboardRow();
+            message.setReplyMarkup(keyboardRow);*/
             GlobalVar.getMyBot().execute(
-                    SendMessage.builder()
-                            .text(text)
-                            .chatId(chatId)
-                            .replyMarkup(replyKeyboard)
-                            .build()
-            );
+                       message
+                );
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
     }
 
+
     public static void sendMsg(Long chatId, String text) {
-        sendMsg(chatId, text, null);
+        sendSimpleMsg(chatId, text);
     }
     public static void sendFeedback(String feedback,String userFIO, String userPhone) {
         String text = """
@@ -44,10 +61,10 @@ public class ResService {
                 Number : %s
                 Feedback : %s
                 """.formatted(userFIO,userPhone,feedback);
-        sendMsg(me, text, null);
+        sendSimpleMsg(me, text);
     }
     public static void sendMsg(Long chatId, MessageKey text) {
-        sendMsg(chatId, text, null);
+        sendSimpleMsg(chatId, i18n.getMsg(text));
     }
     public static void sendErrorMsg(Long chatId) {
         sendMsg(chatId, "Error!!");
@@ -57,6 +74,7 @@ public class ResService {
     public static void sendMsg(Long chatId, MessageKey key, ReplyKeyboard replyKeyboard) {
         sendMsg(chatId, i18n.getMsg(key), replyKeyboard);
     }
+
 
 
     public static void sendPhoto(Long chatId, MessageKey key, ReplyKeyboard replyKeyboard, InputFile inputFile) {

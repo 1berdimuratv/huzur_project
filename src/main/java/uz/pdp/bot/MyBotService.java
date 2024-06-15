@@ -22,7 +22,9 @@ public class MyBotService {
             message = update.getCallbackQuery().getMessage();
             message.setText(update.getCallbackQuery().getData());
         } else return;
-
+        if (message.getText() != null && message.getText().equals("/start")){
+            userService.userRestart(message.getChatId());
+        }
         User user = userService.userVerify(message.getChatId());
         GlobalVar.setUSER(user);
         userCases(update, message, user.getUserState());

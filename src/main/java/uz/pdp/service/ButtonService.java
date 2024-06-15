@@ -112,8 +112,12 @@ public class ButtonService {
         KeyboardButton button1 = new KeyboardButton(i18n.getMsg(PHONE_BUTTON));
         button1.setRequestContact(true);
         row1.add(button1);
-
-        return finalCase(List.of(row1));
+        ReplyKeyboardMarkup replyMarkup = new ReplyKeyboardMarkup();
+        replyMarkup.setKeyboard(List.of(row1));
+        replyMarkup.setIsPersistent(true);
+        replyMarkup.setResizeKeyboard(true);
+        replyMarkup.setOneTimeKeyboard(true);
+        return replyMarkup;
     }
 
     public static ReplyKeyboardMarkup settings(String name,String number) {

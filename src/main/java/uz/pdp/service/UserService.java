@@ -239,7 +239,13 @@ public class UserService {
             ResService.sendMsg(user.getChatId(), MAIN_MENU, ButtonService.mainMenu());
         }
     }
-
+    public void userRestart(Long chatId){
+        Optional<User> byId = userRepository.findById(chatId);
+        if (byId.isPresent()){
+            userRepository.delete(chatId);
+            orderService.clearAll(chatId);
+        }
+    }
     public User userVerify(Long chatId) {
         Optional<User> optional = userRepository.findById(chatId);
         if (optional.isEmpty()) {
@@ -276,8 +282,8 @@ public class UserService {
     public void usersFIO(Update update, Message message) {
         User user = GlobalVar.getUSER();
         String name = message.getText();
-        if (!CoreUtils.checkNameFormat(name,user.getLang())){
-            ResService.sendErrorMsg(user.getChatId());
+        if (name == null || !CoreUtils.checkNameFormat(name,user.getLang())){
+            ResService.sendMsg(user.getChatId(),NAME_ERROR);
             return;
         }
         user.setFio(name);
