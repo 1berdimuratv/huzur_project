@@ -1,8 +1,6 @@
 package uz.pdp.utils;
 
-import uz.pdp.model.OrderProduct;
-import uz.pdp.model.Product;
-import uz.pdp.model.User;
+import uz.pdp.model.*;
 import uz.pdp.model.enams.Lang;
 import uz.pdp.service.I18nService;
 import uz.pdp.service.ProductService;
@@ -35,14 +33,19 @@ public interface Template {
         return res.toString();
     }
 
-    static String ordersMessageForAdmin(List<OrderProduct> products, User user){
+    static String ordersMessageForAdmin(List<OrderProduct> products, User user, String orderBody){
         StringBuilder res = new StringBuilder();
         ProductService  productService = ProductService.getInstance();
+        String[] address = CoreUtils.splitAddress(orderBody);
         Lang lang = user.getLang();
         res.append("""
                 FIO : %s
                 Number : %s
-                """.formatted(user.getFio(),user.getPhoneNumber())+" \n");
+                Viloyat/Shahar: %s
+                Tuman : %s
+                Dom : %s
+                Xonadon : %s
+                """.formatted(user.getFio(),user.getPhoneNumber(),address[0],address[1],address[2],address[3])+" \n");
         long price = 0;
         for (OrderProduct product : products) {
             Product byId = productService.findById(product.getProductId(), lang).get();

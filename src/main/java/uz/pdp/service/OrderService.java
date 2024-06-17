@@ -72,4 +72,8 @@ public class OrderService {
         Integer order = findByUserId(chatId).getId();
         orderProductRepository.deleteProd(order,prod);
     }
+
+    public void update(Order order) {
+        ordersRepository.update(order.getId(),order);
+    }
 }

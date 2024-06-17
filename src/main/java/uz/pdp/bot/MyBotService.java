@@ -43,6 +43,7 @@ public class MyBotService {
             case ORDERS -> userService.orders(update,message);
             case MENU -> userService.menu(update,message);
             case ORDERING -> userService.getOrder(update,message);
+            case WRITE_LOCATION -> userService.takeAddress(update,message);
             case SHARE_LOCATION -> userService.overOrder(update,message);
             case CHOOSING_AMOUNT -> userService.ordering_amount(update,message);
             default -> {

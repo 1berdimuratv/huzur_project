@@ -15,6 +15,10 @@ public class Address {
     private Long userId;
     private String lat;
     private String lon;
-    private String address;
+    private String body;
+    private Boolean viloyat = false;
+    private Boolean tuman = false;
+    private Boolean dom = false;
+    private Boolean xonadon = false;
 
 }

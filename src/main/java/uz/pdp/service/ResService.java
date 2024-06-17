@@ -36,13 +36,11 @@ public class ResService {
             log.error(e.getMessage());
         }
     }
-    public static void sendSimpleMsg(Long chatId, String text) {
+    private static void sendSimpleMsg(Long chatId, String text) {
         try {
             SendMessage message = new SendMessage();
             message.setChatId(chatId);
             message.setText(text);
-            /*KeyboardRow keyboardRow = new KeyboardRow();
-            message.setReplyMarkup(keyboardRow);*/
             GlobalVar.getMyBot().execute(
                        message
                 );

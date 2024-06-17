@@ -12,7 +12,7 @@ public class Order {
     private Long userId;
     private Long deliveryPrice;
     private Long actualPrice;
-    private Integer addressId;
+    private Address address;
     {
         this.id = n++;
     }
@@ -21,6 +21,6 @@ public class Order {
         this.userId = userId;
         this.deliveryPrice = null;
         this.actualPrice = actualPrice;
-        this.addressId = null;
+        this.address = new Address();
     }
 }

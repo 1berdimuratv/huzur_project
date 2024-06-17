@@ -1,10 +1,18 @@
 [
   {
-    "chatId": 1676071796,
-    "username": ".",
-    "fio": null,
-    "phoneNumber": "+998974801447",
+    "chatId": 5965321835,
+    "username": "أسدبيك",
+    "fio": "Asad Asad",
+    "phoneNumber": "998901161509",
     "lang": "UZ",
-    "userState": "USERS_FIO"
+    "userState": "WRITE_LOCATION"
+  },
+  {
+    "chatId": 6835906673,
+    "username": null,
+    "fio": null,
+    "phoneNumber": null,
+    "lang": "UZ",
+    "userState": "SHARE_PHONE_NUMBER"
   }
 ]

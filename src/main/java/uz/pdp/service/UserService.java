@@ -15,6 +15,8 @@ import uz.pdp.repository.UserRepository;
 import uz.pdp.utils.CoreUtils;
 import uz.pdp.utils.GlobalVar;
 import uz.pdp.utils.Template;
+
+import javax.swing.text.DefaultEditorKit;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
@@ -71,9 +73,9 @@ public class UserService {
             return;
         }
         if (text.equals(i18n.getMsg(TAKE_ORDER))) {
-            user.setUserState(UserState.SHARE_LOCATION);
+            user.setUserState(UserState.WRITE_LOCATION);
             userRepository.update(user.getChatId(), user);
-            ResService.sendMsg(user.getChatId(), MAIN_MENU, ButtonService.sendLocation());
+            ResService.sendMsg(user.getChatId(), TAKE_VIL, ButtonService.back());
             return;
         }
         Category category = categoryService.find(text, user.getLang());
@@ -178,6 +180,84 @@ public class UserService {
          }
     }
 
+    public void takeAddress(Update update, Message message) {
+        User user = GlobalVar.getUSER();
+        Order order = orderService.findByUserId(user.getChatId());
+        Address address = order.getAddress();
+        Integer step = CoreUtils.analyzeByOrder(order);
+        String text = message.getText();
+        if (text.equals(i18n.getMsg(BACK))) {
+            switch (step) {
+                case 1 -> {
+                    user.setUserState(UserState.MENU);
+                    userRepository.update(user.getChatId(), user);
+                    List<Category> all = categoryService.findAll(user.getLang());
+                    boolean basket = !orderService.getAllByUser(user.getChatId()).isEmpty();
+                    ResService.sendMsg(user.getChatId(), ORDER_MENU, ButtonService.categoriesMenu(all, basket));
+                    return;
+                }
+                case 2 -> {
+                    address.setViloyat(false);
+                    address.setBody(address.getBody().substring(0,address.getBody().lastIndexOf("$")));
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_VIL, ButtonService.back());
+                    return;
+                }
+                case 3 -> {
+                    address.setTuman(false);
+                    address.setBody(address.getBody().substring(0,address.getBody().lastIndexOf("$")));
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_TUM, ButtonService.back());
+                    return;
+                }
+                case 4 -> {
+                    address.setDom(false);
+                    address.setBody(address.getBody().substring(0,address.getBody().lastIndexOf("$")));
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_DDM, ButtonService.back());
+                    return;
+                }
+                case 5 -> {
+                    address.setXonadon(false);
+                    address.setBody(address.getBody().substring(0,address.getBody().lastIndexOf("$")));
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_XON, ButtonService.back());
+                    return;
+                }
+            }
+        } else {
+            switch (step) {
+                case 1 -> {
+                    address.setViloyat(true);
+                    address.setBody(address.getBody() + "$" + text);
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_TUM, ButtonService.back());
+                }
+                case 2 -> {
+                    address.setTuman(true);
+                    address.setBody(address.getBody() + "$" + text);
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_DDM, ButtonService.back());
+                }
+                case 3 -> {
+                    address.setDom(true);
+                    address.setBody(address.getBody() + "$" + text);
+                    orderService.update(order);
+                    ResService.sendMsg(user.getChatId(), TAKE_XON, ButtonService.back());
+                }
+                case 4 -> {
+                    address.setXonadon(true);
+                    address.setBody(address.getBody() + "$" + text);
+                    orderService.update(order);
+                    user.setUserState(UserState.SHARE_LOCATION);
+                    userRepository.update(user.getChatId(),user);
+                    ResService.sendMsg(user.getChatId(), MESSAGE_LOCATION, ButtonService.sendLocation());
+                }
+            }
+        }
+    }
+
+
     public void overOrder(Update update, Message message) {
         User user = GlobalVar.getUSER();
         if (message.hasText()) {
@@ -195,9 +275,10 @@ public class UserService {
         Double latitude = location.getLatitude();
         Double longitude = location.getLongitude();
         List<OrderProduct> allByUser = orderService.getAllByUser(user.getChatId());
-        String s = Template.ordersMessageForAdmin(allByUser, user);
+        Order order = orderService.findByUserId(user.getChatId());
+        String s = Template.ordersMessageForAdmin(allByUser, user,order.getAddress().getBody());
         ResService.sendOrderRequest(s,latitude,longitude);
-        ResService.sendMsg(user.getChatId(),i18n.getMsg(SUCCESSFUL));
+        ResService.sendMsg(user.getChatId(),i18n.getMsg(ORDER_ACCEPTED));
         user.setUserState(UserState.MAIN_MENU);
         userRepository.update(user.getChatId(),user);
         ResService.sendMsg(user.getChatId(),MAIN_MENU,ButtonService.mainMenu());
@@ -216,7 +297,6 @@ public class UserService {
         user.setUserState(UserState.MAIN_MENU);
         userRepository.update(user.getChatId(),user);
     }
-
     public void settings(Update update, Message message) {
         User user = GlobalVar.getUSER();
         String text = message.getText();
@@ -243,9 +323,11 @@ public class UserService {
         Optional<User> byId = userRepository.findById(chatId);
         if (byId.isPresent()){
             userRepository.delete(chatId);
-            orderService.clearAll(chatId);
+            if (orderService.findByUserId(chatId) != null)
+                orderService.clearAll(chatId);
         }
     }
+
     public User userVerify(Long chatId) {
         Optional<User> optional = userRepository.findById(chatId);
         if (optional.isEmpty()) {

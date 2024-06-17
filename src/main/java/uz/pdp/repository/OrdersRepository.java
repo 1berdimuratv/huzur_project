@@ -30,7 +30,7 @@ public class OrdersRepository implements BaseRepository<Order, Integer> {
             List<Order> orders = getAllOrdersFromFile();
             for (Order temp : orders) {
                 if (temp.getId().equals(id)) {
-                    temp.setAddressId(order.getAddressId());
+                    temp.setAddress(order.getAddress());
                     temp.setActualPrice(order.getActualPrice());
                     temp.setUserId(order.getUserId());
                     temp.setDeliveryPrice(order.getDeliveryPrice());

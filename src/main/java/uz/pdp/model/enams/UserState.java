@@ -19,7 +19,8 @@ public enum UserState {
     SETTINGS(11),
     ORDERING(12),
     CHOOSING_AMOUNT(13),
-    SHARE_LOCATION(14);
+    WRITE_LOCATION(14),
+    SHARE_LOCATION(15);
 
     private final int step;
 
